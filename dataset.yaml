@@ -1,0 +1,7 @@
+path: C:\Users\Juls\Desktop\chicken\custom+ours # dataset root dir
+train: images\train # train images
+val: images\val # val images
+
+# Classes
+names:
+  0: chicken
