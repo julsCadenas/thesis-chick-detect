@@ -20,7 +20,7 @@ H, W, _ = frame.shape
 video_path_out = 'webcam_output.mp4'
 out = cv2.VideoWriter(video_path_out, cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (W, H))
 
-model_path = "C:/Users/Juls/runs/detect/train20/weights/last.pt" # palitan mo ng path sa model mo
+model_path = "C:/Users/Juls/runs/detect/train21/weights/last.pt" # palitan mo ng path sa model mo
 if not os.path.exists(model_path):
     print(f"Error: Model file not found at {model_path}")
     exit()
