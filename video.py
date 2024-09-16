@@ -14,7 +14,7 @@ ret, frame = cap.read()
 H, W, _ = frame.shape
 out = cv2.VideoWriter(video_path_out, cv2.VideoWriter_fourcc(*'MP4V'), int(cap.get(cv2.CAP_PROP_FPS)), (W, H))
 
-model_path = "C:/Users/Juls/runs/detect/train21/weights/last.pt"
+model_path = "C:/Users/Juls/runs/detect/train23/weights/last.pt"
 
 model = YOLO(model_path)
 
