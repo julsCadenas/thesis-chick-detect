@@ -2,6 +2,7 @@ import os
 from ultralytics import YOLO
 import cv2
 
+# to avoid lag reduce resolution and frame rate of the video stream
 stream = 'http://192.168.1.2:8080/video'
 cap = cv2.VideoCapture(stream)
 

@@ -1,4 +1,4 @@
-path: C:\Users\Juls\Desktop\chicken\bigdata # dataset root dir
+path: C:\Users\Juls\Desktop\chicken\dataset # dataset root dir
 train: images\train # train images
 val: images\val # val images
 
