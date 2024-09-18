@@ -10,7 +10,7 @@ def index():
     return render_template('index.html') 
 
 # Load the YOLO model
-model = YOLO("C:/Users/Juls/Desktop/chicken/models/etian-last4.pt")
+model = YOLO("C:/Users/Juls/Downloads/train6/weights/best.pt")
 names = model.model.names
 
 # Function to calculate Euclidean distance between two points
@@ -19,8 +19,8 @@ def euclidean_distance(point1, point2):
 
 def generate_frames():
     # Open the video stream from the IP camera
-    stream = 'http://192.168.53.43:8080/video'
-    cap = cv2.VideoCapture(0)
+    stream = 'http://192.168.1.2:8080/video'
+    cap = cv2.VideoCapture(stream)
 
     if not cap.isOpened():
         print("Error: Could not open video stream.")
