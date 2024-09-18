@@ -10,7 +10,7 @@ def index():
     return render_template('index.html') 
 
 # Load the YOLO model
-model = YOLO("C:/Users/Juls/Desktop/models/etian-last4.pt")
+model = YOLO("C:/Users/Juls/Desktop/chicken/models/etian-last4.pt")
 names = model.model.names
 
 # Function to calculate Euclidean distance between two points

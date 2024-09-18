@@ -21,7 +21,7 @@ H, W, _ = frame.shape
 video_path_out = 'webcam_output.mp4'
 out = cv2.VideoWriter(video_path_out, cv2.VideoWriter_fourcc(*'mp4v'), int(cap.get(cv2.CAP_PROP_FPS)), (W, H))
 
-model_path = "C:/Users/Juls/Desktop/models/etian-last4.pt"
+model_path = "C:/Users/Juls/Desktop/chicken/models/etian-last4.pt"
 if not os.path.exists(model_path):
     print(f"Error: Model file not found at {model_path}")
     exit()

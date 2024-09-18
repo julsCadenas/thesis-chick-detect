@@ -3,7 +3,7 @@ import numpy as np
 from ultralytics import YOLO
 
 # Load the YOLO model
-model = YOLO("C:/Users/Juls/Desktop/models/etian-last4.pt")
+model = YOLO("C:/Users/Juls/Desktop/chicken/models/etian-last4.pt")
 names = model.model.names
 
 # Open the video stream
