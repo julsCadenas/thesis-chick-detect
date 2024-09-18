@@ -12,6 +12,8 @@ This repository contains the code for our thesis project, which focuses on chick
 
 ```/stream/stream.py``` - Draft code for streaming the video output of object detection to a website.
 
+```/colab/chicktraining_colab_version.ipynb``` - notebook version for training and testing on a video. 
+
 ### Technology Used:
 - Python
 - OpenCV
