@@ -14,6 +14,8 @@ This repository contains the code for our thesis project, which focuses on chick
 
 ```/colab/chicktraining_colab_version.ipynb``` - notebook version for training and testing on a video. 
 
+```/scripts/*.py``` - scripts for checking our datasets. 
+
 ### Technology Used:
 - Python
 - OpenCV
