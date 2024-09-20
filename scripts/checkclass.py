@@ -2,8 +2,9 @@
 import os
 
 # director of the labels in your dataset
-annotationsDir = 'C:/Users/Juls/Desktop/chicken/dataset/labels/train' #replace with /val and /test after 
+annotationsDir = "path/to/your/datasets" #replace with /val and /test after 
 
+print(f"checking {annotationsDir}")
 for filename in os.listdir(annotationsDir):
     if filename.endswith('.txt'):
         with open(os.path.join(annotationsDir, filename), 'r') as file:
