@@ -1,15 +1,17 @@
 from ultralytics import YOLO
 
-# Load a model
-model = YOLO("last.pt")  # build a new model from scratch
+# Load your model
+model = YOLO("last.pt")  
 
-# # use the model-
+# use the model
 model.train(data="dataset.yaml", epochs=64)  # train the model
 model.val() # validate the model
 
-# uncomment this if isasave mo yung model
-# saving the model
-# import torch
-# torch.save('model1.pt')
-# model.save('model1.pt')
-# model.export(format="onnx")
+# if using gpu uncomment this:
+# if _name_ == '_main_':
+#     import sys
+#     from ultralytics import YOLO 
+
+#     modelPath = 'C:/Users/Juls/Desktop/chicken/models/etian-last5.pt'
+#     model = YOLO(modelPath)  
+#     model.train(data="dataset.yaml", epochs=1)  
