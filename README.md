@@ -16,6 +16,8 @@ This repository contains the code for our thesis project, which focuses on chick
 
 ```/scripts/*.py``` - scripts for checking our datasets. 
 
+```/drafts/*.py``` - drafts for the core functions of our thesis project. 
+
 ### Technology Used:
 - Python
 - OpenCV
