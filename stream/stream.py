@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
+# initialize the flask application
 app = Flask(__name__)
 
 # render the webpage
@@ -15,7 +16,8 @@ modelPath = "C:/Users/Juls/Desktop/chicken/models/etian-last5.pt"
 model = YOLO(modelPath)
 names = model.model.names
 
-distanceTreshold = 300 #set distance to be considered isolation
+# set distance to be considered isolation
+distanceTreshold = 300
 
 # calculate the distance between centers of each bounding box
 def euclideanDistance(point1, point2):
@@ -33,9 +35,6 @@ def genFrames():
     if not cap.isOpened():
         print("ERROR: Could not open video stream")
         exit()
-
-    #remove later if not needed
-    # w, h, fps = (int(cap.get(x) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS))) 
     
     # if camera is open
     while cap.isOpened():
@@ -44,17 +43,17 @@ def genFrames():
             print("Video frame is empty or video processing is completed")
             break
         
-        results = model(im0) #run the model on the frame
-        centers = [] #store the center of each bounding box to an array
-        boundingBoxes = [] #store the bounding boxes of each detection to an array
+        results = model(im0) # run the model on the frame
+        centers = [] # store the center of each bounding box to an array
+        boundingBoxes = [] # store the bounding boxes of each detection to an array
         
         for result in results:
-            boxes = result.boxes #bounding boxes
+            boxes = result.boxes # bounding boxes
             
             for box in boxes:
-                x1, y1, x2, y2 = box.xyxy[0] #bounding box coordinates
-                cls = int(box.cls[0]) #class value 
-                conf = box.conf[0] #confidence value
+                x1, y1, x2, y2 = box.xyxy[0] # bounding box coordinates
+                cls = int(box.cls[0]) # class value 
+                conf = box.conf[0] # confidence value
                 
                 # calculate centers of the bounding boxes
                 centerX = int((x1 + x2) / 2)
@@ -63,12 +62,12 @@ def genFrames():
                 centers.append((centerX, centerY)) # populate the array with the calculated centers
                 boundingBoxes.append((x1, y1, x2, y2)) # populate the array with the detected bounding boxes
                 
-                cv2.rectangle(im0, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2) #draw the bounding boxes
-                cv2.circle(im0, (centerX, centerY), 5, (0, 255, 0), -1) #put circles in the centers of each bounxing box
+                cv2.rectangle(im0, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2) # draw the bounding boxes
+                cv2.circle(im0, (centerX, centerY), 5, (0, 255, 0), -1) # put circles in the centers of each bounxing box
                 cv2.putText(im0, f"{names[cls]} {conf:.2f}", (int(x1), int(y1) - 10), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2) #print the detected class name and confidence percentage
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2) # print the detected class name and confidence percentage
                 
-            isolatedFlags = [True] * len(centers) #initializa the isolation
+            isolatedFlags = [True] * len(centers) # initialize the isolation
             
             for i in range(len(centers)):
                 for j in range(len(centers)):
@@ -91,12 +90,12 @@ def genFrames():
                     cv2.putText(im0, "Isolated", (int(bbox[0]), int(bbox[1]) - 40), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
                     
-            ret, buffer = cv2.imencode('.jpg', im0) #encodes the frames into jpg
+            ret, buffer = cv2.imencode('.jpg', im0) # encodes the frames into jpg
             if not ret:
                 print("Error: Frame encoding failed")
                 continue
             
-            frame = buffer.tobytes()
+            frame = buffer.tobytes() # converts the encoded frames into bytes
             
             # yield to generate the frames continuously and not all at once like return
             yield(b'--frame\r\n'
@@ -110,6 +109,4 @@ def video_feed():
 
 # initialize the website
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
-                
-        
+    app.run(host='0.0.0.0', port=5000, debug=True)     
