@@ -84,11 +84,13 @@ def genFrames():
                         midPoint = ((centers[i][0] + centers[j][0]) // 2, (centers[i][1] + centers[j][1]) // 2)
                         cv2.putText(im0, f"{dist:.2f} px", midPoint, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
             
-            # function to print the isolation mark on chickens
+            # checks for isolation
             for idx, (center, bbox, isolated) in enumerate(zip(centers, boundingBoxes, isolatedFlags)):
                 if isolated:
                     cv2.putText(im0, "Isolated", (int(bbox[0]), int(bbox[1]) - 40), 
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2) # prints isolation mark on top of the bounding boxes
+                    cv2.rectangle(im0, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 0, 255), 2) # draws red bounding boxes on isolated chickens
+                    
                     
             ret, buffer = cv2.imencode('.jpg', im0) # encodes the frames into jpg
             if not ret:
