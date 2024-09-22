@@ -2,7 +2,7 @@
 import os
 
 # director of the labels in your dataset
-annotationsDir = "path/to/your/datasets" #replace with /val and /test after 
+annotationsDir = "C:/Users/Juls/Desktop/dataset(9-23)/labels/val" #replace with /val and /test after 
 
 print(f"checking {annotationsDir}")
 for filename in os.listdir(annotationsDir):

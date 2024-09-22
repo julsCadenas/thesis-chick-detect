@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 
 # Load your model
-model = YOLO("last.pt")  
+model = YOLO("models/etian-last5.pt")  
 
 # use the model
-model.train(data="dataset.yaml", epochs=64)  # train the model
+model.train(data="dataset.yaml", epochs=1)  # train the model
 model.val() # validate the model
 
 # if using gpu uncomment this:
