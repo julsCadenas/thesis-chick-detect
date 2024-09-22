@@ -10,9 +10,11 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
+    # make sure u have a 'templates' folder inside the same directory as this file (stream.py) with 'index.html' inside it
+    # see index html in ./stream/templates/index.html
 
 # load the model
-modelPath = "C:/Users/Juls/Desktop/chicken/models/etian-last5.pt"
+modelPath = "C:/Users/Juls/Downloads/last.pt"
 model = YOLO(modelPath)
 names = model.model.names
 
