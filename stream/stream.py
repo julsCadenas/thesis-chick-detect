@@ -14,7 +14,7 @@ def index():
     # see index html in ./stream/templates/index.html
 
 # load the model
-modelPath = "C:/Users/Juls/Downloads/last.pt"
+modelPath = "C:/Users/Juls/Downloads/train36/weights/last.pt"
 model = YOLO(modelPath)
 names = model.model.names
 
@@ -29,7 +29,7 @@ def genFrames():
     
     # video stream
     # stream for ip camera stream and webcam to use webcam video stream
-    stream = 'http://192.168.1.6:8080/video'
+    stream = 'http://192.168.1.2:8080/video'
     webcam = 0
     cap = cv2.VideoCapture(stream)
     

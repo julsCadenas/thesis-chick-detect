@@ -1,2 +1,13 @@
 body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+#videofeeds {
+    display: flex;   
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
