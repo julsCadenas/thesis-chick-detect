@@ -1,26 +1,28 @@
+# testing the temperature mapping from object detection to thermal camera on face recognition
+
 import cv2
 import numpy as np
 
-# Face detection setup
+# use haar cascade algorithm to identify faces
 faceCascadeAlgo = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# Thermal camera temperature calibration (modify based on actual thermal camera)
-knownTemperature = np.array([10, 20, 30, 40])  # Known temperatures in °C
-pixelValues = np.array([30, 100, 150, 255])    # Corresponding pixel values (example)
+# calibration: add known temperature data and pixel values to help the thermal camera identify temperatures
+knownTemperature = np.array([10, 20, 30, 40]) # in celsius
+pixelValues = np.array([30, 100, 150, 255])  
 
-# Interpolation function to map pixel values to temperature
-def pixel_to_temperature(pixelValue):
+# numpy interpolation to convert pixel density value to temperature
+def pixelToTemperature(pixelValue):
     return np.interp(pixelValue, pixelValues, knownTemperature)
 
-# Initialize webcam for face detection
-webcam = cv2.VideoCapture(1)  # Assuming 1 is the webcam
+# webcam/rgb camera
+webcam = cv2.VideoCapture(1)  
 
 if not webcam.isOpened():
     print("Error: Could not open webcam.")
     exit()
 
-# Initialize thermal camera
-thermalCamera = cv2.VideoCapture(0)  # Assuming 0 is the thermal camera
+# thermal camera
+thermalCamera = cv2.VideoCapture(0)  
 
 if not thermalCamera.isOpened():
     print("Error: Could not open thermal camera.")
@@ -29,70 +31,60 @@ if not thermalCamera.isOpened():
 cv2.namedWindow('Thermal Camera')
 
 while True:
-    # Read frame from both cameras
-    ret_webcam, frame_webcam = webcam.read()
-    ret_thermal, frame_thermal = thermalCamera.read()
+    retWebcam, frameWebcam = webcam.read()
+    retThermal, frameThermal = thermalCamera.read()
 
-    if not ret_webcam or not ret_thermal:
+    # mileseey tr160i thermal camera includes a grayscale and green video feed, this crops the green one out
+    height, width, _ = frameThermal.shape
+    frameThermal = frameThermal[:height // 2, :] 
+    
+    if not retWebcam or not retThermal:
         print("Error: Could not read frames from cameras.")
         break
 
-    # Process face detection (convert webcam frame to grayscale)
-    gray_webcam = cv2.cvtColor(frame_webcam, cv2.COLOR_BGR2GRAY)
-    faces = faceCascadeAlgo.detectMultiScale(gray_webcam, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    grayWebcam = cv2.cvtColor(frameWebcam, cv2.COLOR_BGR2GRAY) # rgb to grayscale for easier detection of faces
+    faces = faceCascadeAlgo.detectMultiScale(grayWebcam, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)) # detect faces
 
-    # Process thermal camera (convert to grayscale for temperature mapping)
-    thermalImage = cv2.cvtColor(frame_thermal, cv2.COLOR_BGR2GRAY)
-    thermalImageNormalized = cv2.normalize(thermalImage, None, 0, 255, cv2.NORM_MINMAX)
-    thermalImageColored = cv2.applyColorMap(thermalImageNormalized, cv2.COLORMAP_JET)
+    thermalImage = cv2.cvtColor(frameThermal, cv2.COLOR_BGR2GRAY) # convert to grayscale for better pixel density clarity
+    thermalImageNormalized = cv2.normalize(thermalImage, None, 0, 255, cv2.NORM_MINMAX) # normalize the images (0-255 pixel values) for better contrast
+    thermalImageColored = cv2.applyColorMap(thermalImageNormalized, cv2.COLORMAP_JET) # put color into the video feed for better visualization
 
-    # Iterate over detected faces
     for (x, y, w, h) in faces:
-        # Draw the bounding box on the webcam frame
-        cv2.rectangle(frame_webcam, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(frameWebcam, (x, y), (x + w, y + h), (0, 255, 0), 2) # bounding box
 
-        # Calculate the center of the face bounding box
-        face_center_x = x + w // 2
-        face_center_y = y + h // 2
+        # calculate the center of the bounding box
+        faceCenterX = x + w // 2
+        faceCenterY = y + h // 2
 
-        # Scale the coordinates to match the thermal camera resolution if different
-        scale_x = thermalImage.shape[1] / frame_webcam.shape[1]
-        scale_y = thermalImage.shape[0] / frame_webcam.shape[0]
-        thermal_x = int(face_center_x * scale_x)
-        thermal_y = int(face_center_y * scale_y)
+        # map the coordinates from the rgb camera to the thermal camera
+        scaleX = thermalImage.shape[1] / frameWebcam.shape[1]
+        scaleY = thermalImage.shape[0] / frameWebcam.shape[0]
+        thermalX = int(faceCenterX * scaleX)
+        thermalY = int(faceCenterY * scaleY)
 
-        # Ensure the coordinates are valid
-        if 0 <= thermal_x < thermalImage.shape[1] and 0 <= thermal_y < thermalImage.shape[0]:
-            # Get the pixel value at the center of the detected face from the thermal camera
-            face_pixel_value = thermalImage[thermal_y, thermal_x]
-            face_temperature = pixel_to_temperature(face_pixel_value)
+        # retrieve the pixel value of the coordinate
+        if 0 <= thermalX < thermalImage.shape[1] and 0 <= thermalY < thermalImage.shape[0]:
+            facePixelValue = thermalImage[thermalY, thermalX]
+            faceTemperature = pixelToTemperature(facePixelValue)
 
-            # Print temperature for debugging
-            print(f"Detected face at ({face_center_x}, {face_center_y}) with pixel value {face_pixel_value} -> Temperature: {face_temperature:.2f} °C")
+            print(f"Detected face: ({faceCenterX}, {faceCenterY}) | pixel value {facePixelValue} | Temperature: {faceTemperature:.2f} C") # print the resutls
 
-            # Display the temperature on the thermal camera feed
+            # put the bounding boxes and temp data
             fontScale = 0.5
-            cv2.putText(thermalImageColored, f'Temp: {face_temperature:.2f} °C', 
+            cv2.putText(thermalImageColored, f'Temp: {faceTemperature:.2f} C', 
                         (10, 30), cv2.FONT_HERSHEY_SIMPLEX, fontScale, (255, 255, 255), 1)
 
-            # Display the temperature on the webcam frame for clarity
-            cv2.putText(frame_webcam, f'Face Temp: {face_temperature:.2f} °C', 
+            cv2.putText(frameWebcam, f'Face Temp: {faceTemperature:.2f} C', 
                         (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, fontScale, (0, 255, 0), 2)
 
-            # Draw a small circle (dot) on the thermal camera feed at the face center
-            cv2.circle(thermalImageColored, (thermal_x, thermal_y), 5, (255, 0, 0), -1)
+            cv2.circle(thermalImageColored, (thermalX, thermalY), 5, (255, 0, 0), -1)
 
-    # Show the webcam frame with face detection
-    cv2.imshow('Webcam - Face Detection', frame_webcam)
-
-    # Show the thermal camera feed with the temperature and dot
+    cv2.imshow('Webcam - Face Detection', frameWebcam)
     cv2.imshow('Thermal Camera', thermalImageColored)
 
-    # Exit on 'q' key press
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('q'): # press 'q' to exit
         break
 
-# Release the video captures and destroy windows
 webcam.release()
 thermalCamera.release()
 cv2.destroyAllWindows()
