@@ -29,7 +29,7 @@ def genFrames():
     
     # video stream
     # stream for ip camera stream and webcam to use webcam video stream
-    stream = 'http://192.168.1.2:8080/video'
+    stream = 'http://192.168.1.37:8080/video'
     webcam = 0
     cap = cv2.VideoCapture(stream)
     
