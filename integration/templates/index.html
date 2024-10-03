@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Streams</title>
+    <title>Thermal and RGB Feeds</title>
     <style>
-        body {
+        #feeds {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
+            justify-content: space-around;
+            flex-wrap: wrap;
         }
-        .video-container {
-            display: flex;
-            gap: 20px; 
+        .video-feed {
+            width: 48%;
+            margin-bottom: 20px;
         }
-        .video-container div {
-            text-align: center; 
-        }
-        img {
-            max-width: 100%; 
+        .video-feed img {
+            width: 100%;
             height: auto;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <h1>Thermal Mapping Draft</h1>
-    <div class="video-container">
-        <div>
-            <h2>Webcam</h2>
-            <img src="{{ url_for('webcam_feed') }}" alt="Webcam Feed">
+    <h1>Thermal and RGB Video Feeds</h1>
+    <div id="feeds">
+        <!-- RGB feed -->
+        <div class="video-feed">
+            <h2>RGB Feed</h2>
+            <img src="{{ url_for('webcam_feed') }}" alt="RGB Feed">
         </div>
-        <div>
-            <h2>Thermal</h2>
-            <img src="{{ url_for('thermal_feed') }}" alt="Thermal Camera Feed">
+
+        <!-- Thermal feed -->
+        <div class="video-feed">
+            <h2>Thermal Feed</h2>
+            <img src="{{ url_for('thermal_feed') }}" alt="Thermal Feed">
         </div>
     </div>
 </body>
